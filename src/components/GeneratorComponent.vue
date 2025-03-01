@@ -22,7 +22,9 @@
               <el-input-number v-model="formData.seed" :min="0" class="center-align"></el-input-number>
             </el-form-item>
             <el-form-item class="button-center">
-              <el-button type="primary" @click="sendData">Run</el-button>
+              <el-button type="primary" @click="sendData" :disabled="isButtonDisabled">
+                {{ buttonText }}
+              </el-button>
             </el-form-item>
           </el-form>
         </el-card>
@@ -31,10 +33,16 @@
       <el-col :span="12">
         <el-card class="box-card">
           <h3>视频展示</h3>
-          <video v-if="videoUrl" controls width="100%" height="300px">
+          <div v-if="loading">
+            <div class="loading-spinner"></div>
+          </div>
+          <video v-else-if="videoUrl" controls width="100%" height="300px">
             <source :src="videoUrl" type="video/mp4">
             您的浏览器不支持视频播放。
           </video>
+          <div v-else>
+            <p>Waiting for your input...</p>
+          </div>
         </el-card>
       </el-col>
     </el-row>
@@ -66,11 +74,17 @@ export default {
         guidance_scale: 0,
         seed: null
       },
-      videoUrl: ''
+      videoUrl: '',
+      loading: false,
+      isButtonDisabled: false,
+      buttonText: 'Run'
     };
   },
   methods: {
     async sendData() {
+      this.isButtonDisabled = true;
+      this.loading = true;
+      this.buttonText = 'Loading...';
       try {
         const requestData = {
           prompt: this.formData.prompt,
@@ -87,6 +101,10 @@ export default {
         this.videoUrl = response.data.url;
       } catch (error) {
         console.error('请求出错:', error);
+      } finally {
+        this.loading = false;
+        this.isButtonDisabled = false;
+        this.buttonText = 'Run';
       }
     }
   }
@@ -101,7 +119,7 @@ export default {
   width: 100%;
 }
 .el-form-item__label {
-  text-align: center; /* 将标签文本改为居中对齐 */
+  text-align: center;
   padding: 0;
   display: block;
   width: 100%;
@@ -109,14 +127,28 @@ export default {
 .el-form-item {
   margin-bottom: 15px;
   display: flex;
-  justify-content: center; /* 使表单项内的子元素水平居中 */
-  align-items: center; /* 使表单项内的子元素垂直居中（如果有需要） */
-  flex-direction: column; /* 子元素垂直排列 */
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
 }
 .center-align {
-  margin: 0 auto; /* 使输入框在表单项中水平居中 */
+  margin: 0 auto;
 }
 .button-center {
   text-align: center;
+}
+.loading-spinner {
+  width: 80px;
+  height: 80px;
+  border: 8px solid #f3f3f3;
+  border-top: 8px solid #3498db;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 </style>
