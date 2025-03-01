@@ -36,7 +36,7 @@
           <div v-if="loading">
             <div class="loading-spinner"></div>
           </div>
-          <video v-else-if="videoUrl" controls width="100%" height="300px">
+          <video v-else-if="videoUrl" controls width="100%" height="430px">
             <source :src="videoUrl" type="video/mp4">
             您的浏览器不支持视频播放。
           </video>
@@ -141,8 +141,8 @@ export default {
   text-align: center;
 }
 .loading-spinner {
-  width: 80px;
-  height: 80px;
+  width: 350px;
+  height: 350px;
   border: 8px solid #f3f3f3;
   border-top: 8px solid #3498db;
   border-radius: 50%;
