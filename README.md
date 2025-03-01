@@ -20,5 +20,5 @@ npm run build
 npm run lint
 ```
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+### Project effect
+![最终效果](./pic/pre.png)
