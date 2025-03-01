@@ -1,16 +1,16 @@
 <template>
   <div id="app">
-    <TestComponent />
+    <GeneratorComponent />
   </div>
 </template>
 
 <script>
-import TestComponent from './components/TestComponent.vue';
+import GeneratorComponent from './components/GeneratorComponent.vue'; // 修改导入路径和组件名
 
 export default {
   name: 'App',
   components: {
-    TestComponent
+    GeneratorComponent
   }
 };
 </script>
