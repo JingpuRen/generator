@@ -31,7 +31,7 @@
       </el-col>
       <!-- 右边展示视频区域 -->
       <el-col :span="12">
-        <el-card class="box-card">
+        <el-card class="box-card bigger-card">
           <h3>视频展示</h3>
           <div v-if="loading">
             <div class="loading-spinner"></div>
@@ -117,6 +117,9 @@ export default {
 }
 .box-card {
   width: 100%;
+}
+.bigger-card {
+  height: 533px; /* 设置固定高度，可按需调整 */
 }
 .el-form-item__label {
   text-align: center;
