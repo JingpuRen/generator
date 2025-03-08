@@ -1,10 +1,17 @@
 <template>
   <div class="generator-component">
     <el-row :gutter="20">
+      <!-- 添加下拉选择器 -->
+      <el-col :span="24">
+        <el-select v-model="selectedOption" placeholder="选择生成类型" @change="handleSelectionChange">
+          <el-option label="文生视频" value="textToVideo"></el-option>
+          <el-option label="图片生视频" value="imageToVideo"></el-option>
+        </el-select>
+      </el-col>
       <!-- 左边收集数据区域 -->
-      <el-col :span="12">
+      <el-col :span="12" v-if="selectedOption === 'textToVideo'">
         <el-card class="box-card">
-          <h3 style="text-align: center;">数据输入</h3>
+          <h3 style="text-align: center;">文生视频</h3>
           <el-form ref="form" :model="formData" label-width="auto" label-position="top">
             <el-form-item label="提示词 (Prompt)">
               <el-input v-model="formData.prompt"></el-input>
@@ -29,6 +36,10 @@
           </el-form>
         </el-card>
       </el-col>
+      <el-col :span="12" v-if="selectedOption === 'imageToVideo'">
+        <!-- 图片生视频的表单和展示 -->
+        <ImageToVideoComponent />
+      </el-col>
       <!-- 右边展示视频区域 -->
       <el-col :span="12">
         <el-card class="box-card bigger-card">
@@ -51,7 +62,8 @@
 
 <script>
 import axios from 'axios';
-import { ElRow, ElCol, ElCard, ElForm, ElFormItem, ElInput, ElInputNumber, ElButton } from 'element-plus';
+import { ElRow, ElCol, ElCard, ElForm, ElFormItem, ElInput, ElInputNumber, ElButton, ElSelect, ElOption } from 'element-plus';
+import ImageToVideoComponent from './ImageToVideoComponent.vue'; // 新增的组件
 
 export default {
   name: 'GeneratorComponent',
@@ -63,10 +75,14 @@ export default {
     ElFormItem,
     ElInput,
     ElInputNumber,
-    ElButton
+    ElButton,
+    ElSelect,
+    ElOption,
+    ImageToVideoComponent
   },
   data() {
     return {
+      selectedOption: 'textToVideo', // 默认选择文生视频
       formData: {
         prompt: '',
         negative_prompt: '',
@@ -81,6 +97,10 @@ export default {
     };
   },
   methods: {
+    handleSelectionChange(value) {
+      // 根据选择的值切换页面
+      console.log('Selected:', value);
+    },
     async sendData() {
       this.isButtonDisabled = true;
       this.loading = true;
@@ -99,6 +119,7 @@ export default {
 
         const response = await axios.post('/api/generator', requestData);
         this.videoUrl = response.data.url;
+        console.log(response.data.url);
       } catch (error) {
         console.error('请求出错:', error);
       } finally {
