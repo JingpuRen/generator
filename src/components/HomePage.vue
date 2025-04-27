@@ -2,7 +2,7 @@
   <div class="home-container">
     <!-- 顶部信息栏 -->
     <div class="top-info-bar">
-      <span>短视频创作平台 · 专业视频生成工具</span>
+      <span>短视频创作平台 - 您的专业视频生成工具</span>
     </div>
     
     <!-- 动态背景 -->
@@ -159,6 +159,8 @@ export default {
   width: 100px;
   height: 100px;
   margin-bottom: 20px;
+  object-fit: contain; /* 保持原始比例 */
+  image-rendering: -webkit-optimize-contrast; /* 优化渲染 */
 }
 
 .card-content h3 {
