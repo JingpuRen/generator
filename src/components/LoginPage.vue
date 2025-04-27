@@ -141,6 +141,9 @@ export default {
       .then(response => {
         if (response.data.code === 200) {
           this.$message.success(response.data.msg || '登录成功');
+          // 存储用户的账号和密码
+          localStorage.setItem('account', this.loginForm.username);
+          localStorage.setItem('password', this.loginForm.password);
           // 修改为跳转到首页
           this.$router.push('/home'); 
         } else {

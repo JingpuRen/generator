@@ -3,6 +3,7 @@
     <!-- 顶部信息栏 -->
     <div class="top-info-bar">
       <span>短视频创作平台 - 您的专业视频生成工具</span>
+      <span class="user-info" v-if="userInfo.nickname">{{ userInfo.nickname }}</span>
     </div>
     
     <!-- 动态背景 -->
@@ -48,6 +49,18 @@
 <script>
 export default {
   name: 'HomePage',
+  data() {
+    return {
+      userInfo: {
+        nickname: 'nickname'
+      }
+    };
+  },
+  created() {
+    console.log('从localStorage获取的account:', localStorage.getItem('account'));
+    console.log('从localStorage获取的password:', localStorage.getItem('password'));
+    this.fetchUserInfo();
+  },
   methods: {
     goToGenerator(type) {
       this.$router.push({
@@ -58,6 +71,24 @@ export default {
     goToCommunity() {
       // 这里可以添加跳转到社区页面的逻辑
       this.$message.info('社区功能即将上线');
+    },
+    async fetchUserInfo() {
+      try {
+        const account = localStorage.getItem('account') || '';
+        const password = localStorage.getItem('password') || '';
+        const response = await this.$axios.post('/user/info', {
+          account: account,
+          password: password
+        }, {
+          timeout: 10000 // 将超时时间增加到10秒
+        });
+        if (response.data.code === 200) {
+          this.userInfo.nickname = response.data.nickname;
+        }
+      } catch (error) {
+        console.error('获取用户信息失败:', error);
+        this.$message.error('获取用户信息失败，请检查网络连接');
+      }
     }
   }
 };
@@ -80,10 +111,13 @@ export default {
   color: white;
   display: flex;
   align-items: center;
-  justify-content: center;
-  font-size: 14px;
-  z-index: 10;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  justify-content: space-between;
+  padding: 0 20px;
+}
+
+.user-info {
+  font-weight: bold;
+  margin-right: 50px; /* 添加右侧间距 */
 }
 
 .dynamic-bg {
@@ -160,7 +194,6 @@ export default {
   height: 100px;
   margin-bottom: 20px;
   object-fit: contain; /* 保持原始比例 */
-  image-rendering: -webkit-optimize-contrast; /* 优化渲染 */
 }
 
 .card-content h3 {
