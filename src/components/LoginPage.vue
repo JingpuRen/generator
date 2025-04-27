@@ -141,7 +141,8 @@ export default {
       .then(response => {
         if (response.data.code === 200) {
           this.$message.success(response.data.msg || '登录成功');
-          this.$emit('login-success');
+          // 修改为跳转到首页
+          this.$router.push('/home'); 
         } else {
           this.$message.error(response.data.msg || '登录失败');
           // 清空表单
@@ -218,13 +219,13 @@ export default {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 60px;
+  padding: 0px;
   z-index: 1;
 }
 
 .system-title {
   text-align: center;
-  margin-bottom: 40px;
+  margin-bottom: 5px; /* 减小间距，原值为 40px */
   color: white;
   text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
 }
@@ -242,16 +243,17 @@ export default {
 }
 
 .left-image-area img {
-  max-width: 80%;
-  max-height: 65%;  /* 调整图片高度留出标题空间 */
+  max-width: 60%;
+  max-height: 50%;
   border-radius: 10px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
   object-fit: contain;
+  margin-bottom: 40px; /* 添加底部边距，你可以根据实际需求调整这个值 */
 }
 
 .login-card {
   width: 450px;  /* 增大宽度 */
-  margin: 60px;  /* 增加外边距 */
+  margin: 100px;  /* 增加外边距 */
   padding: 50px;  /* 增加内边距 */
   background: rgba(255, 255, 255, 0.95);
   border-radius: 15px;  /* 增大圆角 */
