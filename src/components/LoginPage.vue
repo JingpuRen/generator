@@ -164,9 +164,7 @@ export default {
       console.log(`Login with ${provider}`);
     },
     goRegister() {
-        this.$router.push('/register').then(() => {
-      window.location.reload() // 临时解决方案，不推荐长期使用
-    })
+        this.$router.push('/register')
     }
   }
 };
