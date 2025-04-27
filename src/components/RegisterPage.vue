@@ -101,11 +101,48 @@ export default {
   },
   methods: {
     handleRegister() {
+      // 基本空值检查
+      if (!this.registerForm.username || !this.registerForm.password || !this.registerForm.confirmPassword) {
+        this.$message.warning('请填写完整信息');
+        return;
+      }
+
       this.loading = true;
-      setTimeout(() => {
-        this.loading = false;
-        this.$router.push('/');
-      }, 1500);
+      
+      // 准备发送数据
+      const registerData = {
+        username: this.registerForm.username,
+        password: this.registerForm.password,
+        confirmPassword: this.registerForm.confirmPassword  // 添加确认密码字段
+      };
+
+      // 发送注册请求
+      this.$axios.post('/register', registerData, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+      .then(response => {
+        console.log('完整响应:', response) // 添加调试日志
+        if (response.data.code === 200) {
+          console.log("接收到数据");
+          this.$message.success(response.data.msg || '注册成功');
+          this.$router.push('/login');
+        } else {
+          this.$message.error(response.data.msg || '注册失败');
+          this.registerForm = {
+            username: '',
+            password: '',
+            confirmPassword: ''
+          };
+          this.loading = false; // 添加这行重置loading状态
+        }
+      })
+      .catch(error => {
+        const errorMsg = error.response?.data?.message || '注册失败，请稍后重试';
+        this.$message.error(errorMsg);
+        this.loading = false; // 添加这行重置loading状态
+      });
     },
     goLogin() {
       this.$router.push('/login');

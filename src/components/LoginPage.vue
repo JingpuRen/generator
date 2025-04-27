@@ -70,8 +70,9 @@
 </template>
 
 <script>
-import particlesJS from 'particles.js';
-import 'particles.js/particles';
+// 修改导入方式
+import 'particles.js'
+import particlesJS from 'particles.js'
 
 export default {
   name: 'LoginPage',
@@ -90,36 +91,74 @@ export default {
   },
   methods: {
     initParticles() {
-      particlesJS('particles-js', {
-        particles: {
-          number: { value: 80, density: { enable: true, value_area: 800 } },
-          color: { value: "#3a8ee6" },
-          shape: { type: "circle" },
-          opacity: { value: 0.5, random: true },
-          size: { value: 3, random: true },
-          line_linked: { enable: true, distance: 150, color: "#3a8ee6", opacity: 0.4, width: 1 },
-          move: { enable: true, speed: 2, direction: "none", random: true }
-        },
-        interactivity: {
-          detect_on: "canvas",
-          events: {
-            onhover: { enable: true, mode: "repulse" },
-            onclick: { enable: true, mode: "push" }
+      // 确保使用正确的调用方式
+      if (typeof particlesJS === 'function') {
+        particlesJS('particles-js', {
+          particles: {
+            number: { value: 80, density: { enable: true, value_area: 800 } },
+            color: { value: "#3a8ee6" },
+            shape: { type: "circle" },
+            opacity: { value: 0.5, random: true },
+            size: { value: 3, random: true },
+            line_linked: { enable: true, distance: 150, color: "#3a8ee6", opacity: 0.4, width: 1 },
+            move: { enable: true, speed: 2, direction: "none", random: true }
+          },
+          interactivity: {
+            detect_on: "canvas",
+            events: {
+              onhover: { enable: true, mode: "repulse" },
+              onclick: { enable: true, mode: "push" }
+            }
           }
-        }
-      });
+        });
+      }
     },
     animateInput(type) {
       // 这里可以添加输入框聚焦动画
       console.log(`${type} input focused`);
     },
     handleLogin() {
+      // 基本空值检查
+      if (!this.loginForm.username || !this.loginForm.password) {
+        this.$message.warning('请输入用户名和密码');
+        return;
+      }
+  
       this.loading = true;
-      // 模拟登录请求
-      setTimeout(() => {
+      
+      // 准备发送数据
+      const loginData = {
+        username: this.loginForm.username,
+        password: this.loginForm.password
+      };
+  
+      // 发送登录请求
+      this.$axios.post('/login', loginData, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+      .then(response => {
+        if (response.data.code === 200) {
+          this.$message.success(response.data.msg || '登录成功');
+          this.$emit('login-success');
+        } else {
+          this.$message.error(response.data.msg || '登录失败');
+          // 清空表单
+          this.loginForm = {
+            username: '',
+            password: '',
+            remember: false
+          };
+        }
+      })
+      .catch(error => {
+        const errorMsg = error.response?.data?.message || '登录失败，请稍后重试';
+        this.$message.error(errorMsg);
+      })
+      .finally(() => {
         this.loading = false;
-        this.$emit('login-success'); // 触发登录成功事件
-      }, 1500);
+      });
     },
     socialLogin(provider) {
       console.log(`Login with ${provider}`);
