@@ -33,12 +33,12 @@
           </div>
         </el-card>
         
-        <!-- 加入社区卡片 -->
-        <el-card class="feature-card" @click="goToCommunity">
+        <!-- 用户反馈卡片 -->
+        <el-card class="feature-card" @click="goToFeedback()">
           <div class="card-content">
-            <img src="@/assets/community-icon.png" alt="加入社区">
-            <h3>加入社区</h3>
-            <p>与创作者交流分享经验</p>
+            <img src="@/assets/feedback-icon.png" alt="用户反馈">
+            <h3>用户反馈</h3>
+            <p>向我们提出您的宝贵意见</p>
           </div>
         </el-card>
       </div>
@@ -68,9 +68,9 @@ export default {
         query: { type }
       });
     },
-    goToCommunity() {
-      // 这里可以添加跳转到社区页面的逻辑
-      this.$message.info('社区功能即将上线');
+    goToFeedback() {
+      // 这里可以添加跳转到用户反馈页面的逻辑
+      this.$message.info('反馈功能即将上线');
     },
     async fetchUserInfo() {
       try {
