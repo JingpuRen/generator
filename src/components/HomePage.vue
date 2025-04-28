@@ -16,7 +16,7 @@
       
       <div class="feature-cards">
         <!-- 文生视频卡片 -->
-        <el-card class="feature-card" @click="goToGenerator('textToVideo')">
+        <el-card class="feature-card" @click="goToTextToVideo()">
           <div class="card-content">
             <img src="@/assets/text-icon.png" alt="文生视频">
             <h3>文生视频</h3>
@@ -25,7 +25,7 @@
         </el-card>
         
         <!-- 图生视频卡片 -->
-        <el-card class="feature-card" @click="goToGenerator('imageToVideo')">
+        <el-card class="feature-card" @click="goToImageToVideo()">
           <div class="card-content">
             <img src="@/assets/image-icon.png" alt="图生视频">
             <h3>图生视频</h3>
@@ -62,14 +62,13 @@ export default {
     this.fetchUserInfo();
   },
   methods: {
-    goToGenerator(type) {
-      this.$router.push({
-        path: '/generator',
-        query: { type }
-      });
+    goToTextToVideo() {
+      this.$router.push('/text-to-video');
+    },
+    goToImageToVideo() {
+      this.$router.push('/image-to-video');
     },
     goToFeedback() {
-      // 这里可以添加跳转到用户反馈页面的逻辑
       this.$message.info('反馈功能即将上线');
     },
     async fetchUserInfo() {
@@ -80,7 +79,7 @@ export default {
           account: account,
           password: password
         }, {
-          timeout: 10000 // 将超时时间增加到10秒
+          timeout: 10000
         });
         if (response.data.code === 200) {
           this.userInfo.nickname = response.data.nickname;
