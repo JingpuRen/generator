@@ -1,8 +1,9 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import LoginPage from '@/components/LoginPage.vue'
 import RegisterPage from '@/components/RegisterPage.vue'
-import GeneratorComponent from '@/components/GeneratorComponent.vue'
-import HomePage from '@/components/HomePage.vue' // 导入新创建的HomePage
+import HomePage from '@/components/HomePage.vue'
+import TextToVideoComponent from '@/components/TextToVideoComponent.vue'
+import ImageToVideoComponent from '@/components/ImageToVideoComponent.vue'
 
 const routes = [
   {
@@ -16,18 +17,23 @@ const routes = [
     component: RegisterPage
   },
   {
-    path: '/generator',
-    name: 'Generator',
-    component: GeneratorComponent
+    path: '/text-to-video',
+    name: 'TextToVideo',
+    component: TextToVideoComponent
   },
   {
-    path: '/home', // 添加首页路由
+    path: '/image-to-video', 
+    name: 'ImageToVideo',
+    component: ImageToVideoComponent
+  },
+  {
+    path: '/home',
     name: 'Home',
     component: HomePage
   },
   {
     path: '/',
-    redirect: '/login' // 修改默认重定向到首页
+    redirect: '/login'
   }
 ]
 
