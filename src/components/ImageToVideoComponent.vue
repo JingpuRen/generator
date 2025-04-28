@@ -1,48 +1,78 @@
 <template>
   <div class="image-to-video-component">
-    <el-card class="box-card">
-      <h3>图片生视频</h3>
-      <el-form ref="form" :model="formData" label-width="auto" label-position="top">
-        <el-form-item label="提示词 (Prompt)" required>
-          <el-input v-model="formData.prompt"></el-input>
-        </el-form-item>
-        <el-form-item label="图片上传" required>
-          <el-upload
-              action="/api/upload"
-              list-type="picture-card"
-              :on-preview="handlePreview"
-              :on-remove="handleRemove"
-              :on-success="handleSuccess"
-              :file-list="formData.fileList">
-            <i class="el-icon-plus"></i>
-          </el-upload>
-        </el-form-item>
-        <el-form-item label="负面提示词 (Negative Prompt)">
-          <el-input v-model="formData.negative_prompt"></el-input>
-        </el-form-item>
-        <el-form-item label="推理步数 (Num Inference Steps)">
-          <el-input-number v-model="formData.num_inference_steps" :min="0"></el-input-number>
-        </el-form-item>
-        <el-form-item label="引导比例 (Guidance Scale)">
-          <el-input-number v-model="formData.guidance_scale" :min="0"></el-input-number>
-        </el-form-item>
-        <el-form-item label="随机种子 (Seed)">
-          <el-input-number v-model="formData.seed" :min="0"></el-input-number>
-        </el-form-item>
-        <el-form-item class="button-center">
-          <el-button type="primary" @click="sendData" :disabled="isButtonDisabled">
-            {{ buttonText }}
-          </el-button>
-        </el-form-item>
-      </el-form>
-    </el-card>
-    <el-card class="box-card video-display" v-if="videoUrl">
-      <h3>生成的视频</h3>
-      <video controls width="100%" height="430px">
-        <source :src="videoUrl" type="video/mp4">
-        您的浏览器不支持视频播放。
-      </video>
-    </el-card>
+    <el-row :gutter="20">
+      <el-col :span="12">
+        <el-card class="box-card">
+          <h3>图片生视频</h3>
+          <el-form ref="form" :model="formData" label-width="auto" label-position="top">
+            <el-form-item label="提示词 (Prompt)" required>
+              <el-input 
+                v-model="formData.prompt" 
+                type="textarea" 
+                :rows="4"
+                resize="none"
+                style="width: 100%; min-height: 100px; max-width: none">
+              </el-input>
+            </el-form-item>
+            <el-form-item label="图片上传" required>
+              <el-upload
+                  action="/api/upload"
+                  list-type="picture-card"
+                  :on-preview="handlePreview"
+                  :on-remove="handleRemove"
+                  :on-success="handleSuccess"
+                  :file-list="formData.fileList">
+                <i class="el-icon-plus"></i>
+              </el-upload>
+            </el-form-item>
+            <el-form-item label="负面提示词 (Negative Prompt)">
+              <el-input 
+                v-model="formData.negative_prompt" 
+                type="textarea" 
+                :rows="4"
+                resize="none"
+                style="width: 100%; min-height: 100px; max-width: none">
+              </el-input>
+            </el-form-item>
+            <el-form-item label="推理步数 (Num Inference Steps)">
+              <el-input-number v-model="formData.num_inference_steps" :min="0"></el-input-number>
+            </el-form-item>
+            <el-form-item label="引导比例 (Guidance Scale)">
+              <el-input-number v-model="formData.guidance_scale" :min="0"></el-input-number>
+            </el-form-item>
+            <el-form-item label="随机种子 (Seed)">
+              <el-input-number v-model="formData.seed" :min="0"></el-input-number>
+            </el-form-item>
+            <el-form-item class="button-center">
+              <el-button type="primary" @click="sendData" :disabled="isButtonDisabled">
+                {{ buttonText }}
+              </el-button>
+            </el-form-item>
+          </el-form>
+        </el-card>
+      </el-col>
+      <el-col :span="12">
+        <el-card class="box-card bigger-card">
+          <h3>视频展示</h3>
+          <div v-if="loading">
+            <el-progress :percentage="progressPercent" :status="progressStatus" />
+            <div class="loading-spinner"></div>
+          </div>
+          <div v-else-if="videoUrl" class="video-container">
+            <video ref="videoPlayer" controls width="100%" height="430px">
+              <source :src="videoUrl" type="video/mp4">
+            </video>
+            <div class="video-actions">
+              <el-button type="primary" @click="downloadVideo">下载视频</el-button>
+              <el-button @click="playVideo">重新播放</el-button>
+            </div>
+          </div>
+          <div v-else>
+            <el-empty description="请上传图片并设置参数"></el-empty>
+          </div>
+        </el-card>
+      </el-col>
+    </el-row>
   </div>
 </template>
 
@@ -95,11 +125,14 @@ export default {
           seed: this.formData.seed
         };
         console.log(requestData);
-        const response = await axios.post('/api/ImageToVideo', requestData);
+        const response = await axios.post('/ImageToVideo', requestData, {
+          timeout: 300000 // 将超时时间延长到30秒
+        });
         console.log('后端返回的响应:', response); // 输出后端返回的数据
         this.videoUrl = response.data.url;
       } catch (error) {
         console.error('请求出错:', error);
+        this.$message.error('请求超时，请稍后再试或检查网络连接');
       } finally {
         this.isButtonDisabled = false;
         this.buttonText = 'Generate';
@@ -112,6 +145,24 @@ export default {
 <style scoped>
 .image-to-video-component {
   padding: 20px;
+  height: calc(100vh - 40px);
+}
+.el-row {
+  height: 100%;
+}
+.el-col {
+  height: 100%;
+  display: flex;
+}
+.box-card {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow-y: auto; /* 添加滚动条以防内容过长 */
+}
+.bigger-card {
+  height: 100%;
 }
 .button-center {
   text-align: center;
@@ -131,5 +182,23 @@ export default {
 }
 .video-display {
   margin-top: 20px;
+}
+
+.image-preview {
+  margin-top: 10px;
+  border: 1px dashed #d9d9d9;
+  padding: 8px;
+  text-align: center;
+}
+
+.video-actions {
+  margin-top: 10px;
+  text-align: center;
+}
+
+.video-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 </style>
