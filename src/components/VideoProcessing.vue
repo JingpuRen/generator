@@ -49,13 +49,13 @@
       </el-card>
 
       <!-- 下载按钮 -->
-      <el-card class="download-card" v-if="processedUrl">
-        <div class="action-buttons">
-          <el-button type="success" @click="downloadVideo">
-            <el-icon><download /></el-icon> 下载视频
-          </el-button>
-        </div>
-      </el-card>
+<!--      <el-card class="download-card" v-if="processedUrl">-->
+<!--        <div class="action-buttons">-->
+<!--          <el-button type="success" @click="downloadVideo">-->
+<!--            <el-icon><download /></el-icon> 下载视频-->
+<!--          </el-button>-->
+<!--        </div>-->
+<!--      </el-card>-->
     </div>
   </div>
 </template>
