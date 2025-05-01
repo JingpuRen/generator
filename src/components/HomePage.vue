@@ -89,7 +89,7 @@ export default {
       });
     },
     goToVideoProcessing() {
-      this.$message.info('视频处理功能即将上线');
+      this.$router.push('/video-processing');
     },
     async fetchUserInfo() {
       try {

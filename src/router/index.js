@@ -4,6 +4,7 @@ import RegisterPage from '@/components/RegisterPage.vue'
 import HomePage from '@/components/HomePage.vue'
 import TextToVideoComponent from '@/components/TextToVideoComponent.vue'
 import ImageToVideoComponent from '@/components/ImageToVideoComponent.vue'
+import VideoProcessing from '@/components/VideoProcessing.vue'  // 新增导入
 
 const routes = [
   {
@@ -25,6 +26,11 @@ const routes = [
     path: '/image-to-video', 
     name: 'ImageToVideo',
     component: ImageToVideoComponent
+  },
+  {
+    path: '/video-processing',
+    name: 'VideoProcessing',
+    component: VideoProcessing
   },
   {
     path: '/home',
