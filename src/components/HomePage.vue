@@ -33,6 +33,15 @@
           </div>
         </el-card>
         
+        <!-- 视频处理卡片 -->
+        <el-card class="feature-card" @click="goToVideoProcessing()">
+          <div class="card-content">
+            <img src="@/assets/video-icon.png" alt="视频处理">
+            <h3>视频处理</h3>
+            <p>编辑和处理您的视频</p>
+          </div>
+        </el-card>
+        
         <!-- 用户反馈卡片 -->
         <el-card class="feature-card" @click="goToFeedback()">
           <div class="card-content">
@@ -70,6 +79,9 @@ export default {
     },
     goToFeedback() {
       this.$message.info('反馈功能即将上线');
+    },
+    goToVideoProcessing() {
+      this.$message.info('视频处理功能即将上线');
     },
     async fetchUserInfo() {
       try {
