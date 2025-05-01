@@ -46,7 +46,7 @@
         <el-card class="feature-card" @click="goToFeedback()">
           <div class="card-content">
             <img src="@/assets/feedback-icon.png" alt="用户反馈">
-            <h3>用户反馈</h3>
+            <h3>联系我们</h3>
             <p>向我们提出您的宝贵意见</p>
           </div>
         </el-card>
@@ -78,7 +78,15 @@ export default {
       this.$router.push('/image-to-video');
     },
     goToFeedback() {
-      this.$message.info('反馈功能即将上线');
+      this.$alert('如有任何问题或建议，请联系我的邮箱：jingpu_ren@163.com', '联系我们', {
+        confirmButtonText: '我已知晓',
+        callback: () => {
+          this.$message({
+            type: 'info',
+            message: '您的反馈是对我的最大支持！'
+          });
+        }
+      });
     },
     goToVideoProcessing() {
       this.$message.info('视频处理功能即将上线');
