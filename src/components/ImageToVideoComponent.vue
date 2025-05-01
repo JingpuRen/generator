@@ -1,5 +1,9 @@
 <template>
   <div class="image-to-video-component">
+    <!-- 顶部信息栏 -->
+    <div class="top-info-bar">
+      <span>短视频生成系统之图生视频</span>
+    </div>
     <el-row :gutter="20">
       <el-col :span="12">
         <el-card class="box-card">
@@ -237,5 +241,19 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+.top-info-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 60px;
+  background: linear-gradient(90deg, #667eea, #764ba2);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 20px;
+  z-index: 100;
 }
 </style>
