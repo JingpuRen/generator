@@ -64,7 +64,7 @@
             </video>
             <div class="video-actions">
               <el-button type="primary" @click="downloadVideo">下载视频</el-button>
-              <el-button @click="playVideo">重新播放</el-button>
+              <el-button type="success" @click="shareToWeibo">分享到微博</el-button>
             </div>
           </div>
           <div v-else>
@@ -137,6 +137,43 @@ export default {
         this.isButtonDisabled = false;
         this.buttonText = 'Generate';
       }
+    },
+    downloadVideo() {
+      if (!this.videoUrl) {
+        this.$message.warning('请先生成视频');
+        return;
+      }
+      
+      const now = new Date();
+      const timestamp = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}-${String(now.getSeconds()).padStart(2, '0')}`;
+      const filename = `generated-video-${timestamp}.mp4`;
+      
+      fetch(this.videoUrl)
+        .then(response => response.blob())
+        .then(blob => {
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = filename;
+          document.body.appendChild(a);
+          a.click();
+          window.URL.revokeObjectURL(url);
+          document.body.removeChild(a);
+          this.$message.success('视频下载成功');
+        })
+        .catch(error => {
+          console.error('下载失败:', error);
+          this.$message.error('视频下载失败');
+        });
+    },
+    
+    shareToWeibo() {
+      if (!this.videoUrl) {
+        this.$message.warning('请先生成视频');
+        return;
+      }
+      const shareUrl = `http://service.weibo.com/share/share.php?url=${encodeURIComponent(this.videoUrl)}&title=我用AI生成的视频`;
+      window.open(shareUrl, '_blank', 'width=550,height=400');
     }
   }
 };

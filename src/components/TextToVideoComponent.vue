@@ -34,10 +34,15 @@
           <div v-if="loading">
             <div class="loading-spinner"></div>
           </div>
-          <video v-else-if="videoUrl" controls width="100%" height="430px">
-            <source :src="videoUrl" type="video/mp4">
-            您的浏览器不支持视频播放。
-          </video>
+          <div v-else-if="videoUrl" class="video-container">
+            <video controls width="100%" height="430px">
+              <source :src="videoUrl" type="video/mp4">
+            </video>
+            <div class="video-actions">
+              <el-button type="primary" @click="downloadVideo">下载视频</el-button>
+              <el-button type="warning" @click="shareToWeibo" style="margin-left: 10px;">分享到微博</el-button>
+            </div>
+          </div>
           <div v-else>
             <p>Waiting for your input...</p>
           </div>
@@ -97,6 +102,50 @@ export default {
         this.isButtonDisabled = false;
         this.buttonText = 'Run';
       }
+    },  // 这里需要添加逗号
+    downloadVideo() {
+      console.log('开始下载视频:', this.videoUrl);
+      
+      // 生成带时间戳的文件名
+      const now = new Date();
+      const timestamp = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}-${String(now.getSeconds()).padStart(2, '0')}`;
+      const filename = `generated-video-${timestamp}.mp4`;
+      console.log('生成的文件名:', filename);
+      
+      // 改用fetch方式下载
+      fetch(this.videoUrl)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('网络响应不正常');
+          }
+          return response.blob();
+        })
+        .then(blob => {
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = filename;  // 使用带时间戳的文件名
+          document.body.appendChild(a);
+          a.click();
+          window.URL.revokeObjectURL(url);
+          document.body.removeChild(a);
+          console.log('视频下载完成');
+          this.$message.success('视频下载成功');
+        })
+        .catch(error => {
+          console.error('下载失败:', error);
+          this.$message.error('视频下载失败');
+        });
+    },
+    shareToWeibo() {
+      if (!this.videoUrl) {
+        this.$message.warning('请先生成视频再分享');
+        return;
+      }
+      
+      const shareUrl = `http://service.weibo.com/share/share.php?url=${encodeURIComponent(this.videoUrl)}&title=我用AI生成的视频`;
+      window.open(shareUrl, '_blank', 'width=550,height=400');
+      console.log('分享到微博:', shareUrl);
     }
   }
 };
