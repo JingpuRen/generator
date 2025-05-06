@@ -132,7 +132,19 @@ export default {
 <style scoped>
 .video-processing {
   height: 100vh;
-  background-color: #f5f7fa;
+  background: linear-gradient(135deg, #4a8cff 0%, #1a56db 100%);
+  background-image: 
+    radial-gradient(circle at 20% 30%, rgba(255,255,255,0.4) 0%, transparent 40%),
+    radial-gradient(circle at 80% 70%, rgba(255,255,255,0.3) 0%, transparent 40%);
+  background-attachment: fixed;
+  background-size: 200% 200%;
+  animation: gradientBG 15s ease infinite;
+}
+
+@keyframes gradientBG {
+  0% { background-position: 0% 50% }
+  50% { background-position: 100% 50% }
+  100% { background-position: 0% 50% }
 }
 
 .top-bar {
@@ -150,10 +162,24 @@ export default {
   max-width: 1200px;
   margin: 20px auto;
   padding: 0 20px;
+  display: flex;
+  gap: 20px;
 }
 
 .upload-card, .options-card {
-  margin-bottom: 20px;
+  flex: 1;
+  min-width: 0;
+  margin-bottom: 0;
+}
+
+@media (max-width: 768px) {
+  .content-container {
+    flex-direction: column;
+  }
+}
+
+.upload-card:hover, .options-card:hover {
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.12);
 }
 
 .upload-icon {
@@ -189,5 +215,14 @@ export default {
   gap: 20px;
   width: 100%;
   margin-top: 20px;
+}
+
+/* 新增动画效果 */
+.el-upload-dragger {
+  transition: all 0.3s ease;
+}
+
+.el-upload-dragger:hover {
+  transform: translateY(-2px);
 }
 </style>
